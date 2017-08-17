@@ -26,11 +26,6 @@ pipeline {
                 sh 'mvn -B -DskipTests=true clean compile package'
                 stash name: 'war', includes: 'target/**/*'
             }
-            post {
-                success {
-                    archive 'target/**/*.war'
-                }
-            }
         }
         stage('Test Backend') {
             agent {
