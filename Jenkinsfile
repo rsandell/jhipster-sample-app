@@ -141,7 +141,7 @@ pipeline {
             steps {
                 timeout(15) {
                     input message: 'Deploy to production?', ok: 'Fire zee missiles!'
-                    node {
+                    node("linux") {
                         unstash 'war'
                         sh './deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
                     }
