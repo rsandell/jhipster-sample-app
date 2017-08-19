@@ -499,13 +499,15 @@
                         </goals>
                         <configuration>
                             <outputDirectory>target/scripts</outputDirectory>
-                            <resource>
-                                <directory>src/main/scripts/</directory>
-                                <filtering>false</filtering>
-                                <includes>
-                                    <include>**/*.sh</include>
-                                </includes>
-                            </resource>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/scripts/</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>**/*.sh</include>
+                                    </includes>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
