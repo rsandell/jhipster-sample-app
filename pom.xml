@@ -491,6 +491,23 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>release-scripts</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/scripts</outputDirectory>
+                            <resource>
+                                <directory>src/main/scripts/</directory>
+                                <filtering>false</filtering>
+                                <includes>
+                                    <include>**/*.sh</include>
+                                </includes>
+                            </resource>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

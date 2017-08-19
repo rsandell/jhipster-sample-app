@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REL_VERSION = "${BRANCH_NAME.contains('release-') ? BRANCH_NAME.drop(BRANCH_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : ""}"
+        REL_VERSION = "${BRANCH_NAME.contains('release-') ? BRANCH_NAME.drop(BRANCH_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : 'M.' + BUILD_NUMBER}"
     }
     agent none
     options {
@@ -11,7 +11,7 @@ pipeline {
             agent any
             steps {
                 checkout scm
-                stash(name: 'ws', includes: '**')
+                stash(name: 'ws', includes: '**', excludes: '**/.git/**')
             }
         }
         stage('Build Backend') {
@@ -69,7 +69,7 @@ pipeline {
                     steps {
                         unstash 'ws'
                         unstash 'war'
-                        sh './frontEndTests.sh'
+                        sh 'target/scripts/frontEndTests.sh'
                     }
                 }
                 stage('Performance') {
@@ -106,7 +106,7 @@ pipeline {
             }
             steps {
                 unstash 'war'
-                sh './deploy.sh staging -v $REL_VERSION -u $STAGING_AUTH_USR -p $STAGING_AUTH_PSW'
+                sh 'target/scripts/deploy.sh staging -v $REL_VERSION -u $STAGING_AUTH_USR -p $STAGING_AUTH_PSW'
             }
             //Post: Send notifications; hipchat, slack, send email etc.
         }
@@ -138,7 +138,7 @@ pipeline {
                     input message: 'Deploy to production?', ok: 'Fire zee missiles!'
                     node("linux") {
                         unstash 'war'
-                        sh './deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
+                        sh 'target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
                     }
                 }
             }
