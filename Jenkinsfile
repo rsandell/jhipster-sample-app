@@ -69,7 +69,7 @@ pipeline {
                     steps {
                         unstash 'ws'
                         unstash 'war'
-                        sh 'target/scripts/frontEndTests.sh'
+                        sh '. target/scripts/frontEndTests.sh'
                     }
                 }
                 stage('Performance') {
@@ -106,7 +106,7 @@ pipeline {
             }
             steps {
                 unstash 'war'
-                sh 'target/scripts/deploy.sh staging -v $REL_VERSION -u $STAGING_AUTH_USR -p $STAGING_AUTH_PSW'
+                sh '. target/scripts/deploy.sh staging -v $REL_VERSION -u $STAGING_AUTH_USR -p $STAGING_AUTH_PSW'
             }
             //Post: Send notifications; hipchat, slack, send email etc.
         }
@@ -138,7 +138,7 @@ pipeline {
                     input message: 'Deploy to production?', ok: 'Fire zee missiles!'
                     node("linux") {
                         unstash 'war'
-                        sh 'target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
+                        sh '. target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
                     }
                 }
             }
