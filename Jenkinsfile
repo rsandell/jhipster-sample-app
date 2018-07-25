@@ -145,7 +145,8 @@ pipeline {
                 timeout(15)
             }
             input {
-                message: 'Deploy to production?', ok: 'Fire zee missiles!'
+                message 'Deploy to production?'
+                ok 'Fire zee missiles!'
             }
             steps {
                 unstash 'war'
