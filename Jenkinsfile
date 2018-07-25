@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REL_VERSION = "${BRANCH_NAME.contains('release-') ? BRANCH_NAME.drop(BRANCH_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : 'M.' + BUILD_NUMBER}"
+        REL_VERSION = "${TAG_NAME?.contains('release-') ? TAG_NAME.drop(TAG_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : 'M.' + BUILD_NUMBER}"
     }
     agent none
     options {
@@ -56,7 +56,7 @@ pipeline {
                     when {
                         anyOf {
                             branch "master"
-                            branch "release-*"
+                            tag "release-*"
                             changeset "src/main/webapp/**/*"
                         }
                     }
@@ -74,9 +74,14 @@ pipeline {
                 }
                 stage('Performance') {
                     when {
-                        anyOf {
-                            branch "master"
-                            branch "release-*"
+                        allOf {
+                            anyOf {
+                                branch "master"
+                                tag "release-*"
+                            }
+                            not {
+                                changeRequest()
+                            }
                         }
                     }
                     agent {
@@ -101,7 +106,10 @@ pipeline {
             when {
                 anyOf {
                     branch "master"
-                    branch "release-*"
+                    changeRequest target: "master"
+                    not {
+                        buildingTag()
+                    }
                 }
             }
             steps {
@@ -116,7 +124,7 @@ pipeline {
                 not {
                     anyOf {
                         branch "master"
-                        branch "release-*"
+                        buildingTag()
                     }
                 }
             }
@@ -126,21 +134,22 @@ pipeline {
             }
         }
         stage('Deploy to Production') {
-            agent none
+            agent 'linux'
             environment {
                 PROD_AUTH = credentials('production')
             }
             when {
-                branch "release-*"
+                tag "release-*"
+            }
+            options {
+                timeout(15)
+            }
+            input {
+                message: 'Deploy to production?', ok: 'Fire zee missiles!'
             }
             steps {
-                timeout(15) {
-                    input message: 'Deploy to production?', ok: 'Fire zee missiles!'
-                    node("linux") {
-                        unstash 'war'
-                        sh '. target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
-                    }
-                }
+                unstash 'war'
+                sh '. target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
             }
         }
     }
