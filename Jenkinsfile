@@ -134,7 +134,7 @@ pipeline {
             }
         }
         stage('Deploy to Production') {
-            agent { label 'linux' }
+            agent none
             environment {
                 PROD_AUTH = credentials('production')
             }
@@ -144,13 +144,12 @@ pipeline {
             options {
                 timeout(15)
             }
-            input {
-                message 'Deploy to production?'
-                ok 'Fire zee missiles!'
-            }
             steps {
-                unstash 'war'
-                sh '. target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
+                input message: 'Deploy to production?', ok: 'Fire zee missiles!'
+                node ('linux') {
+                    unstash 'war'
+                    sh '. target/scripts/deploy.sh production -v $REL_VERSION -u $PROD_AUTH_USR -p $PROD_AUTH_PSW'
+                }
             }
         }
     }
