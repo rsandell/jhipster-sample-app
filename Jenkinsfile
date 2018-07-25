@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        REL_VERSION = "${TAG_NAME?.contains('release-') ? TAG_NAME.drop(TAG_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : 'M.' + BUILD_NUMBER}"
+        REL_VERSION = "${(TAG_NAME != null && TAG_NAME.contains('release-')) ? TAG_NAME.drop(TAG_NAME.lastIndexOf('-')+1) + '.' + BUILD_NUMBER : 'M.' + BUILD_NUMBER}"
     }
     agent none
     options {
