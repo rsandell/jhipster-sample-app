@@ -134,7 +134,7 @@ pipeline {
             }
         }
         stage('Deploy to Production') {
-            agent 'linux'
+            agent { label 'linux' }
             environment {
                 PROD_AUTH = credentials('production')
             }
