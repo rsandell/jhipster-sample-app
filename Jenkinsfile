@@ -1,4 +1,4 @@
-pipeline {
+pipeline { //change me
     environment {
         REL_VERSION = "${(TAG_NAME != null && TAG_NAME.contains('release-')) ? TAG_NAME.drop(TAG_NAME.lastIndexOf('-')+1) : 'M.' + BUILD_NUMBER}"
     }
