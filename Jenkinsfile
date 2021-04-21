@@ -42,11 +42,11 @@ pipeline { //change me
             post {
                 success {
                     junit '**/surefire-reports/**/*.xml'
-                    findbugs pattern: 'target/**/findbugsXml.xml', unstableNewAll: '0' //unstableTotalAll: '0'
+                    recordIssues(tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)])
                 }
                 unstable {
                     junit '**/surefire-reports/**/*.xml'
-                    findbugs pattern: 'target/**/findbugsXml.xml', unstableNewAll: '0' //unstableTotalAll: '0'
+                    recordIssues(tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)])
                 }
             }
         }
