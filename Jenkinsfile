@@ -42,11 +42,11 @@ pipeline { //change me
             post {
                 success {
                     junit '**/surefire-reports/**/*.xml'
-                    recordIssues(tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)])
+                    recordIssues minimumSeverity: 'HIGH', tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)]
                 }
                 unstable {
                     junit '**/surefire-reports/**/*.xml'
-                    recordIssues(tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)])
+                    recordIssues minimumSeverity: 'HIGH', tools: [findBugs(pattern: 'target/**/findbugsXml.xml', useRankAsPriority: true)]
                 }
             }
         }
